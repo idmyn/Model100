@@ -97,6 +97,9 @@
 // Support for the GeminiPR Stenography protocol
 #include "Kaleidoscope-Steno.h"
 
+// Support for inverting the Shift behaviour keys
+#include "Kaleidoscope-TopsyTurvy.h"
+
 /** This 'enum' is a list of all the macros used by the Model 100's firmware
   * The names aren't particularly important. What is important is that each
   * is unique.
@@ -208,10 +211,10 @@ KEYMAPS(
 
    M(MACRO_ANY),  Key_6, Key_7, Key_8,     Key_9,         Key_0,         LockLayer(NUMPAD),
    Key_Enter,     Key_Y, Key_U, Key_I,     Key_O,         Key_P,         Key_Equals,
-                  Key_H, Key_J, Key_K,     Key_L,         Key_Semicolon, Key_Quote,
+                  Key_H, Key_J, Key_K,     Key_L,         TOPSY(Semicolon), Key_Quote,
    Key_RightAlt,  Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
    Key_RightShift, Key_LeftAlt, Key_Spacebar, Key_RightControl,
-   ShiftToLayer(FUNCTION)),
+   Key_F16),
 
 #elif defined (PRIMARY_KEYMAP_DVORAK)
 
@@ -592,13 +595,21 @@ KALEIDOSCOPE_INIT_PLUGINS(
 
   // Enables the GeminiPR Stenography protocol. Unused by default, but with the
   // plugin enabled, it becomes configurable - and then usable - via Chrysalis.
-  GeminiPR);
+  GeminiPR,
+
+  // Additional plugins
+  TopsyTurvy);
 
 /** The 'setup' function is one of the two standard Arduino sketch functions.
  * It's called when your keyboard first powers up. This is where you set up
  * Kaleidoscope and any plugins.
  */
 void setup() {
+  // key indices here: https://github.com/keyboardio/Kaleidoscope/blob/6fd2fa1/plugins/Kaleidoscope-Hardware-Keyboardio-Model100/src/kaleidoscope/device/keyboardio/Model100.h
+  QUKEYS(
+    kaleidoscope::plugin::Qukey(0, KeyAddr(3, 9), LCTRL(Key_LeftAlt)) // F16/ctrl+alt
+  )
+
   // First, call Kaleidoscope's internal setup function
   Kaleidoscope.setup();
 
